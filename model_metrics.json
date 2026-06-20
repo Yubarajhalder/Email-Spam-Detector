@@ -1,0 +1,22 @@
+{
+  "accuracy": 96.77,
+  "precision": 96.41,
+  "recall": 100.0,
+  "f1_score": 98.17,
+  "confusion_matrix": [
+    [
+      113,
+      36
+    ],
+    [
+      0,
+      966
+    ]
+  ],
+  "model_type": "Logistic Regression",
+  "vectorizer": "TF-IDF",
+  "dataset": "SMS Spam Collection (mail_data.csv)",
+  "features": 7440,
+  "training_samples": 4457,
+  "test_samples": 1115
+}

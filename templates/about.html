@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}About Project — AI Email Spam Detector{% endblock %}
+
+{% block content %}
+<section class="section-padding hero-section-sm">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1 class="section-title display-5">About the Project</h1>
+            <p class="section-subtitle lead">A machine learning-powered email spam detection system</p>
+        </div>
+
+        <div class="row g-4 mb-5">
+            <div class="col-lg-8 mx-auto">
+                <div class="glass-card p-4 p-lg-5">
+                    <h3 class="mb-4"><i class="fas fa-info-circle me-2 text-primary"></i>Project Overview</h3>
+                    <p>
+                        The AI Email Spam Detector is a web application that classifies email messages as
+                        <strong>Spam</strong> or <strong>Ham</strong> (legitimate) using a supervised machine learning
+                        pipeline. It combines natural language processing with a trained classifier to deliver
+                        fast, accurate predictions through an intuitive web interface.
+                    </p>
+                    <p class="mb-0">
+                        The system was built with Python Flask on the backend, Bootstrap 5 on the frontend, and
+                        Scikit-learn for the machine learning pipeline — making it lightweight, portable, and
+                        easy to deploy.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-5">
+            <div class="col-md-6">
+                <div class="glass-card p-4 h-100">
+                    <h4><i class="fas fa-ban text-danger me-2"></i>What is Spam?</h4>
+                    <p class="text-muted">
+                        Spam refers to unsolicited bulk messages — often promotional, fraudulent, or malicious.
+                        Common examples include phishing attempts, lottery scams, fake prize notifications, and
+                        unwanted marketing emails. Spam wastes time, consumes bandwidth, and can pose serious
+                        security risks.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="glass-card p-4 h-100">
+                    <h4><i class="fas fa-envelope-circle-check text-success me-2"></i>What is Ham?</h4>
+                    <p class="text-muted">
+                        Ham is the term used in email filtering for legitimate, wanted messages. These include
+                        personal correspondence, work emails, appointment reminders, and messages from trusted
+                        senders. The goal of spam detection is to let ham through while blocking spam.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-5">
+            <div class="col-lg-4">
+                <div class="glass-card p-4 h-100 text-center">
+                    <div class="info-icon ml-icon mx-auto mb-3"><i class="fas fa-1"></i></div>
+                    <h5>Text Input</h5>
+                    <p class="text-muted mb-0">User pastes email content into the web form.</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="glass-card p-4 h-100 text-center">
+                    <div class="info-icon shield-icon mx-auto mb-3"><i class="fas fa-2"></i></div>
+                    <h5>TF-IDF Vectorization</h5>
+                    <p class="text-muted mb-0">Text is converted to a numerical feature vector using TF-IDF weighting.</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="glass-card p-4 h-100 text-center">
+                    <div class="info-icon ham-icon mx-auto mb-3"><i class="fas fa-3"></i></div>
+                    <h5>Classification</h5>
+                    <p class="text-muted mb-0">Logistic Regression predicts Spam or Ham with confidence scores.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-5">
+            <div class="col-lg-6">
+                <div class="glass-card p-4 h-100">
+                    <h4><i class="fas fa-cogs me-2 text-primary"></i>Technical Stack</h4>
+                    <ul class="tech-list">
+                        <li><strong>Backend:</strong> Python Flask</li>
+                        <li><strong>ML Library:</strong> Scikit-learn</li>
+                        <li><strong>Model:</strong> {{ metrics.model_type }}</li>
+                        <li><strong>Vectorizer:</strong> {{ metrics.vectorizer }} ({{ "{:,}".format(metrics.features) }} features)</li>
+                        <li><strong>Frontend:</strong> HTML5, CSS3, Bootstrap 5</li>
+                        <li><strong>Dataset:</strong> {{ metrics.dataset }}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="glass-card p-4 h-100">
+                    <h4><i class="fas fa-chart-pie me-2 text-primary"></i>Model Performance</h4>
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="stat-card-sm">
+                                <div class="stat-number-sm">{{ metrics.accuracy }}%</div>
+                                <div class="stat-label">Accuracy</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-card-sm">
+                                <div class="stat-number-sm">{{ metrics.precision }}%</div>
+                                <div class="stat-label">Precision</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-card-sm">
+                                <div class="stat-number-sm">{{ metrics.recall }}%</div>
+                                <div class="stat-label">Recall</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-card-sm">
+                                <div class="stat-number-sm">{{ metrics.f1_score }}%</div>
+                                <div class="stat-label">F1 Score</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <a href="{{ url_for('index') }}#predict" class="btn btn-gradient btn-lg">
+                <i class="fas fa-bolt me-2"></i>Try the Detector
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

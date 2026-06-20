@@ -1,0 +1,300 @@
+{% extends "base.html" %}
+
+{% block title %}AI Email Spam Detector — Home{% endblock %}
+
+{% block content %}
+<section id="home" class="hero-section">
+    <div class="hero-bg"></div>
+    <div class="container position-relative">
+        <div class="row align-items-center min-vh-100 py-5">
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <span class="badge hero-badge mb-3"><i class="fas fa-robot me-1"></i> Powered by ML</span>
+                <h1 class="hero-title display-4 fw-bold mb-3">AI Email Spam Detector</h1>
+                <p class="hero-subtitle lead mb-4">
+                    Detect whether an email is Spam or Ham using Machine Learning in seconds.
+                </p>
+                <a href="#predict" class="btn btn-gradient btn-lg px-4">
+                    <i class="fas fa-bolt me-2"></i>Try Now
+                </a>
+            </div>
+            <div class="col-lg-6 text-center">
+                <img src="{{ url_for('static', filename='images/hero.svg') }}" alt="AI Email Detection Illustration" class="hero-image img-fluid">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="predict" class="section-padding">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Analyze Your Email</h2>
+            <p class="section-subtitle">Paste an email below and get an instant spam classification</p>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="glass-card prediction-card">
+                    <form action="{{ url_for('predict') }}" method="POST" id="predictForm">
+                        <div class="mb-3">
+                            <label for="emailText" class="form-label fw-semibold">
+                                <i class="fas fa-envelope-open-text me-2"></i>Email Content
+                            </label>
+                            <textarea
+                                class="form-control email-textarea"
+                                id="emailText"
+                                name="email_text"
+                                rows="8"
+                                placeholder="Paste your email here..."
+                                autofocus
+                            ></textarea>
+                            <div class="d-flex justify-content-between align-items-center mt-2">
+                                <small class="text-muted"><span id="charCount">0</span> characters</small>
+                                <div class="example-buttons">
+                                    <button type="button" class="btn btn-sm btn-outline-danger" id="exampleSpam">
+                                        <i class="fas fa-skull-crossbones me-1"></i>Example Spam
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-success ms-2" id="exampleHam">
+                                        <i class="fas fa-check me-1"></i>Example Ham
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center position-relative">
+                            <button type="submit" class="btn btn-gradient btn-lg px-5" id="predictBtn">
+                                <i class="fas fa-search me-2"></i>Predict
+                            </button>
+                            <div class="loading-spinner d-none" id="loadingSpinner">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-2 mb-0 text-muted">Analyzing email...</p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="about" class="section-padding bg-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">About Spam Detection</h2>
+            <p class="section-subtitle">Understanding the problem and our ML approach</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="glass-card info-card h-100 text-center">
+                    <div class="info-icon spam-icon"><i class="fas fa-ban"></i></div>
+                    <h5>What is Spam?</h5>
+                    <p class="text-muted mb-0">Unsolicited, irrelevant, or fraudulent messages sent in bulk — often containing scams, phishing links, or unwanted promotions.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="glass-card info-card h-100 text-center">
+                    <div class="info-icon ham-icon"><i class="fas fa-envelope-circle-check"></i></div>
+                    <h5>What is Ham?</h5>
+                    <p class="text-muted mb-0">Legitimate, wanted messages from people or organizations you trust — personal emails, work updates, and genuine notifications.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="glass-card info-card h-100 text-center">
+                    <div class="info-icon shield-icon"><i class="fas fa-shield-virus"></i></div>
+                    <h5>Why It Matters</h5>
+                    <p class="text-muted mb-0">Spam costs billions annually, spreads malware, and erodes trust. Automated detection protects users and organizations at scale.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="glass-card info-card h-100 text-center">
+                    <div class="info-icon ml-icon"><i class="fas fa-brain"></i></div>
+                    <h5>How ML Works</h5>
+                    <p class="text-muted mb-0">Text is converted to numerical features via TF-IDF, then classified by a trained Logistic Regression model.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="model" class="section-padding">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Model Information</h2>
+            <p class="section-subtitle">Performance metrics on the held-out test set</p>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="glass-card metric-card">
+                    <i class="fas fa-database metric-icon"></i>
+                    <h6>Training Dataset</h6>
+                    <p class="metric-value">{{ metrics.dataset }}</p>
+                    <small class="text-muted">{{ metrics.training_samples }} train / {{ metrics.test_samples }} test samples</small>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="glass-card metric-card">
+                    <i class="fas fa-sliders metric-icon"></i>
+                    <h6>Features Used</h6>
+                    <p class="metric-value">{{ "{:,}".format(metrics.features) }}</p>
+                    <small class="text-muted">TF-IDF vocabulary terms</small>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="glass-card metric-card">
+                    <i class="fas fa-vector-square metric-icon"></i>
+                    <h6>Vectorizer</h6>
+                    <p class="metric-value">{{ metrics.vectorizer }}</p>
+                    <small class="text-muted">English stop words, lowercase</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-6 col-md-3">
+                <div class="glass-card stat-card text-center">
+                    <div class="stat-number">{{ metrics.accuracy }}%</div>
+                    <div class="stat-label">Accuracy</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="glass-card stat-card text-center">
+                    <div class="stat-number">{{ metrics.precision }}%</div>
+                    <div class="stat-label">Precision</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="glass-card stat-card text-center">
+                    <div class="stat-number">{{ metrics.recall }}%</div>
+                    <div class="stat-label">Recall</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="glass-card stat-card text-center">
+                    <div class="stat-number">{{ metrics.f1_score }}%</div>
+                    <div class="stat-label">F1 Score</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center mt-4">
+            <div class="col-lg-6">
+                <div class="glass-card p-4">
+                    <h5 class="text-center mb-4"><i class="fas fa-table me-2"></i>Confusion Matrix</h5>
+                    <div class="table-responsive">
+                        <table class="table table-bordered text-center confusion-matrix mb-0">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Pred: Spam</th>
+                                    <th>Pred: Ham</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th>Actual: Spam</th>
+                                    <td class="cm-tp">{{ metrics.confusion_matrix[0][0] }}</td>
+                                    <td class="cm-fn">{{ metrics.confusion_matrix[0][1] }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Actual: Ham</th>
+                                    <td class="cm-fp">{{ metrics.confusion_matrix[1][0] }}</td>
+                                    <td class="cm-tn">{{ metrics.confusion_matrix[1][1] }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-center text-muted mt-3 mb-0">
+                        Model: <strong>{{ metrics.model_type }}</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="features" class="section-padding bg-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Features</h2>
+            <p class="section-subtitle">Everything you need for reliable email classification</p>
+        </div>
+        <div class="row g-4">
+            {% set feature_list = [
+                ('fa-envelope', 'Email Analysis', 'Deep text analysis of email content using NLP techniques.'),
+                ('fa-bolt', 'Instant Prediction', 'Get spam/ham classification results in under a second.'),
+                ('fa-robot', 'Machine Learning', 'Powered by a trained Logistic Regression classifier.'),
+                ('fa-lock', 'Secure Processing', 'Your email is processed locally — nothing is stored permanently.'),
+                ('fa-chart-line', 'High Accuracy', metrics.accuracy|string + '% accuracy on the test dataset.'),
+                ('fa-globe', 'Easy Interface', 'Clean, responsive UI that works on any device.')
+            ] %}
+            {% for icon, title, desc in feature_list %}
+            <div class="col-md-6 col-lg-4">
+                <div class="glass-card feature-card h-100">
+                    <div class="feature-icon"><i class="fas {{ icon }}"></i></div>
+                    <h5>{{ title }}</h5>
+                    <p class="text-muted mb-0">{{ desc }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% if history %}
+<section id="history" class="section-padding">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="section-title mb-0">Recent Predictions</h2>
+            <form action="{{ url_for('clear_history') }}" method="POST">
+                <button type="submit" class="btn btn-sm btn-outline-secondary">
+                    <i class="fas fa-trash me-1"></i>Clear History
+                </button>
+            </form>
+        </div>
+        <div class="row g-3">
+            {% for item in history %}
+            <div class="col-md-6 col-lg-4">
+                <div class="glass-card history-card">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="badge {{ 'bg-danger' if item.prediction == 'Spam' else 'bg-success' }}">
+                            {{ item.prediction }}
+                        </span>
+                        <small class="text-muted">{{ item.timestamp }}</small>
+                    </div>
+                    <p class="history-text mb-2">{{ item.email_text[:100] }}{% if item.email_text|length > 100 %}...{% endif %}</p>
+                    <small class="text-muted">Spam: {{ item.spam_prob }}% | Ham: {{ item.ham_prob }}%</small>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<section id="contact" class="section-padding bg-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Contact</h2>
+            <p class="section-subtitle">Have questions or feedback? Reach out to us.</p>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="glass-card p-4 text-center">
+                    <div class="contact-icons mb-4">
+                        <a href="mailto:contact@spamguard.ai" class="contact-link">
+                            <i class="fas fa-envelope fa-2x"></i>
+                            <span>contact@spamguard.ai</span>
+                        </a>
+                    </div>
+                    <p class="text-muted mb-0">
+                        Built with Flask, Scikit-learn, and Bootstrap 5.
+                        <a href="{{ url_for('about') }}" class="text-decoration-none">Learn more about the project &rarr;</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
